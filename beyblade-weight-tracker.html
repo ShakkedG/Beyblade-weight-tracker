@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Beyblade X – אוסף אישי</title>
+<style>
+:root{--bg:#070711;--sur:#0f1020;--card:#111428;--card2:#141830;--acc:#e94560;--gold:#f5a623;--green:#2ecc71;--red:#e74c3c;--yellow:#f39c12;--blue:#3498db;--text:#edf2ff;--mut:#7a85a3;--brd:#1a1d3a;--glow:rgba(233,69,96,.35)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rajdhani','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* AUTH */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 40%,#1a0d2e 0%,#070711 70%)}
+.auth-box{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:36px;width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(233,69,96,.08)}
+.auth-spin{width:60px;height:60px;background:linear-gradient(135deg,var(--acc),var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;animation:spin 6s linear infinite;box-shadow:0 0 24px var(--glow)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-box h1{font-size:1.6rem;font-family:'Orbitron',sans-serif;background:linear-gradient(90deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.auth-box p{color:var(--mut);font-size:.82rem;margin-bottom:20px}
+.auth-tabs{display:flex;border:1px solid var(--brd);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.auth-tab{flex:1;padding:9px;cursor:pointer;font-size:.88rem;background:transparent;border:none;color:var(--mut);transition:.2s}
+.auth-tab.active{background:var(--acc);color:#fff}
+.auth-field{width:100%;padding:10px 14px;background:var(--sur);border:1px solid var(--brd);border-radius:8px;color:var(--text);font-size:.9rem;outline:none;margin-bottom:10px;transition:.2s}
+.auth-field:focus{border-color:var(--acc)}
+.auth-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--acc),#c0392b);border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s}
+.auth-btn:hover{opacity:.85}
+.auth-err{color:var(--red);font-size:.8rem;margin-top:8px;min-height:18px}
+
+/* APP */
+#app{display:none}
+header{background:linear-gradient(135deg,#0c1a30 0%,#0f1020 100%);border-bottom:2px solid var(--acc);padding:12px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 30px var(--glow),0 2px 0 var(--acc)}
+.h-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--acc),var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;animation:spin 6s linear infinite;flex-shrink:0;box-shadow:0 0 16px var(--glow)}
+.h-title h1{font-size:1.3rem;font-family:'Orbitron',sans-serif;background:linear-gradient(90deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.03em}
+.h-title p{color:var(--mut);font-size:.72rem}
+.h-right{display:flex;align-items:center;gap:12px;margin-right:auto}
+.h-stats{display:flex;gap:10px}
+.hstat{background:var(--card2);border:1px solid var(--brd);border-radius:8px;padding:6px 12px;text-align:center}
+.hstat .n{font-size:1.1rem;font-weight:700;color:var(--gold)}
+.hstat .l{font-size:.65rem;color:var(--mut)}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--brd);border-radius:20px;padding:6px 14px;cursor:pointer}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff}
+.user-name{font-size:.82rem}
+.logout-btn{background:transparent;border:1px solid var(--brd);border-radius:6px;color:var(--mut);padding:5px 10px;cursor:pointer;font-size:.75rem;transition:.2s}
+.logout-btn:hover{border-color:var(--acc);color:var(--acc)}
+
+/* TABS */
+.tabs{background:var(--sur);border-bottom:1px solid var(--brd);display:flex;overflow-x:auto}
+.tab{padding:12px 20px;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--mut);border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--acc)}
+
+/* CONTROLS */
+.controls{background:var(--sur);padding:10px 20px;border-bottom:1px solid var(--brd);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw{flex:1;min-width:180px;position:relative}
+.sw input{width:100%;padding:8px 34px 8px 12px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--text);font-size:.88rem;outline:none;transition:.2s}
+.sw input:focus{border-color:var(--acc)}
+.sw span{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mut);font-size:14px}
+.fbtn{padding:7px 13px;border:1px solid var(--brd);border-radius:7px;background:var(--card);color:var(--text);cursor:pointer;font-size:.8rem;transition:.2s;white-space:nowrap}
+.fbtn:hover{border-color:var(--acc);color:var(--acc)}
+.fbtn.active{background:var(--acc);border-color:var(--acc);color:#fff}
+.srt{padding:7px 10px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--text);outline:none;font-size:.8rem;cursor:pointer}
+
+/* CONTENT */
+#content{padding:0}
+.sec-hdr{padding:14px 20px 6px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--brd)}
+.sec-hdr h2{font-size:.95rem;font-weight:700}
+.line-badge{font-size:.68rem;padding:2px 8px;border-radius:10px;font-weight:600}
+.lb-B{background:rgba(79,195,247,.15);color:#4fc3f7;border:1px solid rgba(79,195,247,.3)}
+.lb-U{background:rgba(206,147,216,.15);color:#ce93d8;border:1px solid rgba(206,147,216,.3)}
+.lb-C{background:rgba(165,214,167,.15);color:#a5d6a7;border:1px solid rgba(165,214,167,.3)}
+.sec-count{font-size:.72rem;color:var(--mut);margin-right:auto}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:12px 20px}
+
+/* PART CARD */
+.pcard-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pcard-name{font-size:.9rem;font-weight:700;line-height:1.3}
+.pcard-sub{font-size:.68rem;color:var(--mut);margin-top:2px}
+.exp-w{font-size:.78rem;color:var(--gold);margin-top:4px;font-weight:600}
+.add-copy-btn{flex-shrink:0;padding:5px 11px;background:var(--acc);border:none;border-radius:6px;color:#fff;font-size:.75rem;font-weight:600;cursor:pointer;transition:.2s}
+.add-copy-btn:hover{opacity:.8}
+
+/* COPIES */
+.copies-list{border-top:1px solid var(--brd)}
+.copy-item{padding:10px 14px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px}
+.copy-item:last-child{border-bottom:none}
+.color-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.2)}
+.copy-info{flex:1;min-width:0}
+.copy-color{font-size:.72rem;color:var(--mut)}
+.copy-weight-row{display:flex;align-items:center;gap:6px;margin-top:2px}
+.copy-actual{font-size:.88rem;font-weight:600}
+.copy-exp{font-size:.72rem;color:var(--mut)}
+.diff-chip{font-size:.68rem;padding:1px 6px;border-radius:8px;font-weight:700}
+.dc-gold{background:rgba(245,166,35,.3);color:var(--gold);border:1px solid rgba(245,166,35,.4)}
+.dc-good{background:rgba(46,204,113,.2);color:var(--green)}
+.dc-warn{background:rgba(243,156,18,.2);color:var(--yellow)}
+.dc-bad{background:rgba(231,76,60,.2);color:var(--red)}
+.dc-low{background:rgba(52,152,219,.2);color:var(--blue)}
+.dc-na{background:rgba(136,146,176,.15);color:var(--mut)}
+.copy-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* PART IMAGE */
+.pcard-img{width:72px;height:72px;object-fit:contain;border-radius:8px;background:var(--card2);border:1px solid var(--brd);flex-shrink:0;transition:.3s;align-self:flex-start}
+.pcard:hover .pcard-img{transform:scale(1.06);border-color:rgba(233,69,96,.5);box-shadow:0 0 12px rgba(233,69,96,.2)}
+.pcard-img-ph{width:72px;height:72px;border-radius:8px;background:var(--card2);border:1px solid var(--brd);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:1.4rem;align-self:flex-start}
+
+/* WIKI VERSION CHIPS */
+.wiki-ver-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.wvbtn{padding:3px 10px;border:1px solid var(--brd);border-radius:14px;background:var(--card);color:var(--text);cursor:pointer;font-size:.75rem;transition:.15s;white-space:nowrap;line-height:1.6}
+.wvbtn:hover{border-color:var(--acc);color:var(--acc)}
+.wvbtn.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.sec-divider{font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;padding-top:10px;margin-top:4px;border-top:1px solid var(--brd)}
+.copy-act{background:transparent;border:1px solid var(--brd);border-radius:5px;color:var(--mut);width:26px;height:26px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.copy-act:hover{border-color:var(--acc);color:var(--acc)}
+.copy-act.del:hover{border-color:var(--red);color:var(--red)}
+
+/* MODAL */
+#modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center}
+#modal-bg.open{display:flex}
+.modal{background:var(--sur);border:1px solid var(--brd);border-radius:16px;width:420px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-size:1rem}
+.modal-close{background:transparent;border:none;color:var(--mut);font-size:20px;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:20px}
+.field-lbl{font-size:.75rem;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.field-wrap{margin-bottom:16px}
+.color-presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.cp{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s;flex-shrink:0}
+.cp:hover{transform:scale(1.15)}
+.cp.sel{border-color:#fff;box-shadow:0 0 0 2px var(--acc)}
+.color-text{width:100%;padding:8px 12px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--text);font-size:.88rem;outline:none}
+.color-text:focus{border-color:var(--acc)}
+.color-preview{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border-radius:7px;margin-top:8px;font-size:.82rem;color:var(--mut)}
+.mold-btns{display:flex;gap:8px;flex-wrap:wrap}
+.mold-btn{padding:6px 14px;border:1px solid var(--brd);border-radius:7px;background:var(--card);color:var(--mut);cursor:pointer;font-size:.82rem;transition:.2s}
+.mold-btn:hover{border-color:var(--acc)}
+.mold-btn.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.minput{width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--text);font-size:.95rem;outline:none}
+.minput:focus{border-color:var(--acc)}
+.mtextarea{width:100%;padding:8px 12px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--text);font-size:.84rem;height:60px;resize:none;font-family:inherit;outline:none}
+.mtextarea:focus{border-color:var(--acc)}
+.modal-foot{padding:16px 20px;border-top:1px solid var(--brd);display:flex;gap:10px;justify-content:flex-end}
+.btn-cancel{padding:9px 18px;background:transparent;border:1px solid var(--brd);border-radius:8px;color:var(--mut);cursor:pointer;font-size:.88rem}
+.btn-save{padding:9px 20px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-size:.88rem}
+
+/* EMPTY */
+.empty-card{grid-column:1/-1;text-align:center;padding:40px;color:var(--mut)}
+
+/* COMBO BUILDER */
+.combo-box{margin:12px 20px;background:var(--card2);border:1px solid var(--brd);border-radius:12px;padding:16px}
+.combo-box h3{font-size:.92rem;color:var(--gold);margin-bottom:12px}
+.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:12px}
+.cg-lbl{font-size:.68rem;color:var(--mut);margin-bottom:3px;text-transform:uppercase}
+.cg-sel{width:100%;padding:7px 10px;background:var(--card);border:1px solid var(--brd);border-radius:6px;color:var(--text);outline:none;font-size:.82rem}
+.combo-result{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--brd)}
+.combo-total{font-size:1.5rem;font-weight:700;color:var(--gold)}
+.combo-parts{font-size:.75rem;color:var(--mut);flex:1}
+
+/* PCARD improvements */
+.pcard{background:var(--card);border:1px solid var(--brd);border-radius:12px;overflow:hidden;transition:.2s;position:relative}
+.pcard:hover{border-color:rgba(233,69,96,.4);box-shadow:0 4px 20px rgba(233,69,96,.1)}
+.pcard.has-copies{border-color:rgba(46,204,113,.25);box-shadow:0 0 8px rgba(46,204,113,.07)}
+
+/* NEWS TAB */
+.news-wrap{padding:16px 20px;max-width:860px;margin:0 auto}
+.news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.news-header h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;background:linear-gradient(90deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.news-post-btn{padding:8px 18px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem;transition:.2s}
+.news-post-btn:hover{opacity:.85}
+.ncard{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:16px;margin-bottom:12px;transition:.2s}
+.ncard:hover{border-color:rgba(233,69,96,.3)}
+.ncard-type{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:8px}
+.nt-tournament{background:rgba(245,166,35,.2);color:var(--gold);border:1px solid rgba(245,166,35,.3)}
+.nt-release{background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.3)}
+.nt-sale{background:rgba(52,152,219,.2);color:var(--blue);border:1px solid rgba(52,152,219,.3)}
+.nt-community{background:rgba(233,69,96,.2);color:var(--acc);border:1px solid rgba(233,69,96,.3)}
+.ncard-title{font-size:1rem;font-weight:700;margin-bottom:4px;line-height:1.3}
+.ncard-body{font-size:.82rem;color:var(--mut);line-height:1.5;margin-bottom:8px}
+.ncard-meta{font-size:.7rem;color:var(--mut);display:flex;gap:12px;align-items:center}
+.ncard-del{background:transparent;border:none;color:var(--mut);cursor:pointer;font-size:12px;padding:0;margin-right:auto}
+.ncard-del:hover{color:var(--red)}
+
+/* PRODUCT MODAL */
+.prod-list{display:flex;flex-direction:column;gap:8px}
+.prod-item{background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.2s;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.prod-item:hover{border-color:var(--acc);background:var(--card2)}
+.prod-name{font-size:.88rem;font-weight:700}
+.prod-parts{font-size:.73rem;color:var(--mut);margin-top:3px}
+.prod-add-btn{flex-shrink:0;padding:5px 12px;background:var(--acc);border:none;border-radius:6px;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap}
+
+@media(max-width:600px){header{flex-wrap:wrap}.h-stats{flex-wrap:wrap}.grid{grid-template-columns:1fr;padding:8px 12px}.modal{max-width:100vw;border-radius:12px 12px 0 0}.news-wrap{padding:10px 12px}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+<div class="auth-box">
+  <div class="auth-spin">⚙</div>
+  <h1>Beyblade X</h1>
+  <p>מעקב אוסף ומשקל חלקים</p>
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="showAuthTab('login')">כניסה</button>
+    <button class="auth-tab" onclick="showAuthTab('register')">הרשמה</button>
+  </div>
+  <div id="login-form">
+    <input class="auth-field" id="li-u" placeholder="שם משתמש" onkeydown="if(event.key==='Enter')login()">
+    <input class="auth-field" id="li-p" type="password" placeholder="סיסמה" onkeydown="if(event.key==='Enter')login()">
+    <button class="auth-btn" onclick="login()">כניסה</button>
+    <div class="auth-err" id="li-err"></div>
+  </div>
+  <div id="reg-form" style="display:none">
+    <input class="auth-field" id="rg-dn" placeholder="שם תצוגה">
+    <input class="auth-field" id="rg-u" placeholder="שם משתמש (לא ניתן לשינוי)">
+    <input class="auth-field" id="rg-p" type="password" placeholder="סיסמה">
+    <input class="auth-field" id="rg-p2" type="password" placeholder="אימות סיסמה" onkeydown="if(event.key==='Enter')register()">
+    <button class="auth-btn" onclick="register()">הרשמה</button>
+    <div class="auth-err" id="rg-err"></div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+<header>
+  <div class="h-logo">⚙</div>
+  <div class="h-title"><h1>Beyblade X</h1><p>Weight Tracker</p></div>
+  <div class="h-right">
+    <div class="h-stats">
+      <div class="hstat"><div class="n" id="s-parts">0</div><div class="l">חלקים</div></div>
+      <div class="hstat"><div class="n" id="s-copies">0</div><div class="l">עותקים</div></div>
+      <div class="hstat"><div class="n" id="s-avg">–</div><div class="l">סטייה ממוצעת</div></div>
+    </div>
+    <div class="user-pill" id="user-pill">
+      <div class="user-avatar" id="user-av">?</div>
+      <span class="user-name" id="user-nm"></span>
+    </div>
+    <button class="logout-btn" onclick="logout()">יציאה</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('blades')">⚔️ להבים</div>
+  <div class="tab" onclick="setTab('ratchets')">🔩 Ratchets</div>
+  <div class="tab" onclick="setTab('bits')">💎 Bits</div>
+  <div class="tab" onclick="setTab('custom')">🔧 Custom Line</div>
+  <div class="tab" onclick="setTab('news')">📰 קהילת ישראל</div>
+</div>
+
+<div class="controls" id="parts-controls">
+  <div class="sw"><input type="text" id="search" placeholder="חיפוש..." oninput="renderTab()"><span>🔍</span></div>
+  <button class="fbtn active" id="f-all" onclick="setFilter('all')">הכל</button>
+  <button class="fbtn" id="f-owned" onclick="setFilter('owned')">ברשותי</button>
+  <button class="fbtn" id="f-unowned" onclick="setFilter('unowned')">לא ברשותי</button>
+  <select class="srt" id="sortby" onchange="renderTab()">
+    <option value="name">שם</option>
+    <option value="weight">משקל צפוי</option>
+    <option value="copies">כמות עותקים</option>
+  </select>
+  <button class="fbtn" onclick="openProductModal()" style="border-color:var(--gold);color:var(--gold)">🛒 ממוצר</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="prod-modal-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center">
+<div class="modal" style="max-height:85vh">
+  <div class="modal-head">
+    <h3>🛒 הוסף ממוצר</h3>
+    <button class="modal-close" onclick="closeProdModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <p style="font-size:.8rem;color:var(--mut);margin-bottom:14px">בחר מוצר – כל החלקים יתווספו לאוסף שלך אוטומטית</p>
+    <div class="prod-list" id="prod-list"></div>
+  </div>
+</div>
+</div>
+
+<!-- NEWS POST MODAL -->
+<div id="news-post-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center">
+<div class="modal">
+  <div class="modal-head">
+    <h3>📢 פרסם עדכון</h3>
+    <button class="modal-close" onclick="closeNewsPost()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="field-wrap">
+      <div class="field-lbl">סוג</div>
+      <select class="srt" id="np-type" style="width:100%;padding:9px 12px">
+        <option value="community">קהילה</option>
+        <option value="tournament">טורניר</option>
+        <option value="sale">מכירה</option>
+        <option value="release">יציאה חדשה</option>
+      </select>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">כותרת</div>
+      <input class="minput" id="np-title" placeholder="כותרת העדכון">
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">תוכן</div>
+      <textarea class="mtextarea" id="np-body" style="height:80px" placeholder="פרטים..."></textarea>
+    </div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-cancel" onclick="closeNewsPost()">ביטול</button>
+    <button class="btn-save" onclick="submitNewsPost()">פרסם</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-bg">
+<div class="modal">
+  <div class="modal-head">
+    <h3 id="modal-title">הוספת עותק</h3>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="field-wrap" id="wiki-ver-wrap" style="display:none">
+      <div class="field-lbl">גרסאות ידועות מהוויקי</div>
+      <div class="wiki-ver-row" id="wiki-colors"></div>
+      <div class="sec-divider">בחר צבע</div>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">צבע</div>
+      <div class="color-presets" id="color-presets"></div>
+      <input class="color-text" id="color-text" placeholder="שם צבע מותאם אישית (למשל: כחול-שחור)" oninput="onColorText(this.value)">
+      <div class="color-preview"><div class="color-dot" id="color-dot-preview" style="width:18px;height:18px"></div><span id="color-name-preview">לא נבחר</span></div>
+    </div>
+    <div class="field-wrap" id="mold-wrap">
+      <div class="field-lbl">מולד</div>
+      <div class="mold-btns" id="mold-btns"></div>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">משקל בפועל (g)</div>
+      <input class="minput" type="number" step="0.1" min="0" id="m-weight" placeholder="0.0">
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">הערות</div>
+      <textarea class="mtextarea" id="m-notes" placeholder="מצב, איפה קנית, וכו'..."></textarea>
+    </div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-cancel" onclick="closeModal()">ביטול</button>
+    <button class="btn-save" onclick="saveModal()">שמור</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════
+// DATA
+// ══════════════════════════════
+const BLADES = [
+  // Basic Line
+  {id:"bl_BlackShell",      n:"BlackShell",      line:"B", w:[32.4]},
+  {id:"bl_CobaltDragoon",   n:"CobaltDragoon",   line:"B", w:[37.8]},
+  {id:"bl_CobaltDrake",     n:"CobaltDrake",     line:"B", w:[38.0,37.3]},
+  {id:"bl_CrimsonGaruda",   n:"CrimsonGaruda",   line:"B", w:[35.0]},
+  {id:"bl_DranDagger",      n:"DranDagger",      line:"B", w:[34.8,35.3,36.0]},
+  {id:"bl_DranStrike",      n:"DranStrike",      line:"B", w:[]},
+  {id:"bl_DranSword",       n:"DranSword",       line:"B", w:[34.6,35.1]},
+  {id:"bl_DranzerSpiral",   n:"DranzerSpiral",   line:"B", w:[27.7]},
+  {id:"bl_DrigerSlash",     n:"DrigerSlash",     line:"B", w:[28.6]},
+  {id:"bl_HellsChain",      n:"HellsChain",      line:"B", w:[33.2]},
+  {id:"bl_HellsScythe",     n:"HellsScythe",     line:"B", w:[32.7,33.7]},
+  {id:"bl_KnightLance",     n:"KnightLance",     line:"B", w:[32.9]},
+  {id:"bl_KnightShield",    n:"KnightShield",    line:"B", w:[32.4,34.8]},
+  {id:"bl_LeonClaw",        n:"LeonClaw",        line:"B", w:[31.4]},
+  {id:"bl_PhoenixFeather",  n:"PhoenixFeather",  line:"B", w:[33.3]},
+  {id:"bl_PhoenixWing",     n:"PhoenixWing",     line:"B", w:[38.0,39.0]},
+  {id:"bl_RhinoHorn",       n:"RhinoHorn",       line:"B", w:[32.7]},
+  {id:"bl_SamuraiCalibur",  n:"SamuraiCalibur",  line:"B", w:[36.0]},
+  {id:"bl_SharkEdge",       n:"SharkEdge",       line:"B", w:[34.5]},
+  {id:"bl_ShelterDrake",    n:"ShelterDrake",    line:"B", w:[32.6]},
+  {id:"bl_SphinxCowl",      n:"SphinxCowl",      line:"B", w:[32.7]},
+  {id:"bl_TriceraPress",    n:"TriceraPress",    line:"B", w:[36.5]},
+  {id:"bl_TyrannoBeat",     n:"TyrannoBeat",     line:"B", w:[37.0]},
+  {id:"bl_UnicornSting",    n:"UnicornSting",    line:"B", w:[33.4,34.0]},
+  {id:"bl_ViperTail",       n:"ViperTail",       line:"B", w:[34.7]},
+  {id:"bl_WeissTiger",      n:"WeissTiger",      line:"B", w:[34.6]},
+  {id:"bl_WhaleWave",       n:"WhaleWave",       line:"B", w:[38.2]},
+  {id:"bl_WizardArrow",     n:"WizardArrow",     line:"B", w:[31.8]},
+  {id:"bl_WyvernGale",      n:"WyvernGale",      line:"B", w:[31.9]},
+  {id:"bl_XenoXcalibur",    n:"XenoXcalibur",   line:"B", w:[31.0]},
+  {id:"bl_DracielShield",   n:"DracielShield",   line:"B", w:[28.0]},
+  {id:"bl_RockLeone",       n:"Rock Leone",      line:"B", w:[29.8]},
+  {id:"bl_BiteCroc",        n:"Bite Croc",       line:"B", w:[34.0],  aka:"CrocCrunch"},
+  {id:"bl_GillShark",       n:"Gill Shark",      line:"B", w:[29.6],  aka:"SharkGill"},
+  {id:"bl_KnifeShinobi",    n:"Knife Shinobi",   line:"B", w:[30.9],  aka:"ShinobiKnife"},
+  {id:"bl_TriceraSpiky",    n:"TriceraSpiky",    line:"B", w:[29.9]},
+  {id:"bl_RoarTyranno",     n:"Roar Tyranno",    line:"B", w:[36.0],  aka:"TyrannoRoar"},
+  {id:"bl_SavageBear",      n:"Savage Bear",     line:"B", w:[29.6],  aka:"BearScratch"},
+  {id:"bl_SteelSamurai",    n:"Steel Samurai",   line:"B", w:[31.2],  aka:"SamuraiSteel"},
+  {id:"bl_TackleGoat",      n:"Tackle Goat",     line:"B", w:[31.5],  aka:"GoatTackle"},
+  {id:"bl_TalonPtera",      n:"Talon Ptera",     line:"B", w:[34.3],  aka:"PteraSwing"},
+  {id:"bl_TuskMammoth",     n:"Tusk Mammoth",    line:"B", w:[32.3,33.3], aka:"MammothTusk"},
+  {id:"bl_StormPegasis",    n:"StormPegasis",    line:"B", w:[31.0]},
+  {id:"bl_VictoryValkyrie", n:"VictoryValkyrie", line:"B", w:[33.2]},
+  // Unique Line
+  {id:"bl_AeroPegasus",     n:"AeroPegasus",     line:"U", w:[38.2,38.7]},
+  {id:"bl_ClockMirage",     n:"ClockMirage",     line:"U", w:[37.7]},
+  {id:"bl_DranBuster",      n:"DranBuster",      line:"U", w:[36.5]},
+  {id:"bl_GhostCircle",     n:"GhostCircle",     line:"U", w:[26.7]},
+  {id:"bl_GolemRock",       n:"GolemRock",       line:"U", w:[34.0]},
+  {id:"bl_HellsHammer",     n:"HellsHammer",     line:"U", w:[33.0,33.5]},
+  {id:"bl_HoverWyvern",     n:"Hover Wyvern",    line:"U", w:[35.1]},
+  {id:"bl_ImpactDrake",     n:"ImpactDrake",     line:"U", w:[39.0]},
+  {id:"bl_KnightMail",      n:"KnightMail",      line:"U", w:[36.7]},
+  {id:"bl_LeonCrest",       n:"LeonCrest",       line:"U", w:[35.0]},
+  {id:"bl_MeteorDragoon",   n:"MeteorDragoon",   line:"U", w:[39.0]},
+  {id:"bl_MummyCurse",      n:"MummyCurse",      line:"U", w:[37.5]},
+  {id:"bl_OrochiCluster",   n:"OrochiCluster",   line:"U", w:[36.6]},
+  {id:"bl_PhoenixRudder",   n:"PhoenixRudder",   line:"U", w:[34.5]},
+  {id:"bl_SamuraiSaber",    n:"SamuraiSaber",    line:"U", w:[36.5]},
+  {id:"bl_ScorpioSpear",    n:"ScorpioSpear",    line:"U", w:[39.6]},
+  {id:"bl_SharkScale",      n:"SharkScale",      line:"U", w:[37.6]},
+  {id:"bl_ShinobiShadow",   n:"ShinobiShadow",   line:"U", w:[28.2]},
+  {id:"bl_SilverWolf",      n:"SilverWolf",      line:"U", w:[36.8]},
+  {id:"bl_WizardRod",       n:"WizardRod",       line:"U", w:[35.3]},
+  // Unique RI Blades
+  {id:"bl_BulletGriffon",   n:"BulletGriffon",   line:"U", w:[], ri:true},
+  {id:"bl_CutterShinobi",   n:"Cutter Shinobi",  line:"U", w:[], ri:true},
+  {id:"bl_RampartAegis",    n:"Rampart Aegis",   line:"U", w:[], ri:true},
+  {id:"bl_RocketGriffon",   n:"Rocket Griffon",  line:"U", w:[], ri:true},
+  {id:"bl_ValorBison",      n:"Valor Bison",     line:"U", w:[], ri:true},
+];
+
+const RATCHETS = [
+  {id:"r_0-60", n:"0-60",  w:6.8,  orig:"C"},{id:"r_0-70", n:"0-70",  w:7.0,  orig:"U"},
+  {id:"r_0-80", n:"0-80",  w:7.6,  orig:"U"},{id:"r_1-50", n:"1-50",  w:null, orig:"C"},
+  {id:"r_1-60", n:"1-60",  w:6.0,  orig:"U"},{id:"r_1-70", n:"1-70",  w:6.1,  orig:"B"},
+  {id:"r_1-80", n:"1-80",  w:6.7,  orig:"U"},{id:"r_2-60", n:"2-60",  w:6.2,  orig:"B"},
+  {id:"r_2-70", n:"2-70",  w:6.4,  orig:"U"},{id:"r_2-80", n:"2-80",  w:6.9,  orig:"B"},
+  {id:"r_3-60", n:"3-60",  w:6.4,  orig:"B"},{id:"r_3-70", n:"3-70",  w:6.4,  orig:"U"},
+  {id:"r_3-80", n:"3-80",  w:7.1,  orig:"B"},{id:"r_3-85", n:"3-85",  w:4.7,  orig:"U"},
+  {id:"r_4-50", n:"4-50",  w:5.9,  orig:"U"},{id:"r_4-55", n:"4-55",  w:4.8,  orig:"C"},
+  {id:"r_4-60", n:"4-60",  w:6.3,  orig:"B"},{id:"r_4-70", n:"4-70",  w:6.4,  orig:"B"},
+  {id:"r_4-80", n:"4-80",  w:7.0,  orig:"B"},{id:"r_5-60", n:"5-60",  w:6.6,  orig:"B"},
+  {id:"r_5-70", n:"5-70",  w:6.7,  orig:"U"},{id:"r_5-80", n:"5-80",  w:7.3,  orig:"B"},
+  {id:"r_6-60", n:"6-60",  w:6.1,  orig:"C"},{id:"r_6-70", n:"6-70",  w:6.3,  orig:"B"},
+  {id:"r_6-80", n:"6-80",  w:6.9,  orig:"C"},{id:"r_7-55", n:"7-55",  w:null, orig:"U"},
+  {id:"r_7-60", n:"7-60",  w:7.1,  orig:"U"},{id:"r_7-70", n:"7-70",  w:7.3,  orig:"U"},
+  {id:"r_7-80", n:"7-80",  w:7.8,  orig:"B"},{id:"r_8-70", n:"8-70",  w:null, orig:"C"},
+  {id:"r_9-60", n:"9-60",  w:6.2,  orig:"B"},{id:"r_9-65", n:"9-65",  w:null, orig:"U"},
+  {id:"r_9-70", n:"9-70",  w:6.3,  orig:"U"},{id:"r_9-80", n:"9-80",  w:6.9,  orig:"B"},
+  {id:"r_M-85", n:"M-85",  w:10.6, orig:"B"},
+];
+
+const BITS = [
+  {id:"t_Ball",        n:"Ball",         abbr:"B",   w:2.1,  orig:"B"},
+  {id:"t_Cyclone",     n:"Cyclone",      abbr:"C",   w:2.1,  orig:"B"},
+  {id:"t_DiskSpike",   n:"Disk Spike",   abbr:"DS",  w:null, orig:"B"},
+  {id:"t_Dot",         n:"Dot",          abbr:"D",   w:2.0,  orig:"B"},
+  {id:"t_Elevate",     n:"Elevate",      abbr:"E",   w:3.2,  orig:"B"},
+  {id:"t_Flat",        n:"Flat",         abbr:"F",   w:2.2,  orig:"B"},
+  {id:"t_FreeFlat",    n:"Free Flat",    abbr:"FF",  w:null, orig:"B"},
+  {id:"t_GearBall",    n:"Gear Ball",    abbr:"GB",  w:2.0,  orig:"B"},
+  {id:"t_GearFlat",    n:"Gear Flat",    abbr:"GF",  w:2.3,  orig:"B"},
+  {id:"t_GearNeedle",  n:"Gear Needle",  abbr:"GN",  w:2.0,  orig:"B"},
+  {id:"t_GearPoint",   n:"Gear Point",   abbr:"GP",  w:2.3,  orig:"B"},
+  {id:"t_HighNeedle",  n:"High Needle",  abbr:"HN",  w:2.2,  orig:"B"},
+  {id:"t_HighTaper",   n:"High Taper",   abbr:"HT",  w:2.2,  orig:"B"},
+  {id:"t_LowFlat",     n:"Low Flat",     abbr:"LF",  w:2.1,  orig:"B"},
+  {id:"t_Merge",       n:"Merge",        abbr:"M",   w:3.4,  orig:"B"},
+  {id:"t_Needle",      n:"Needle",       abbr:"N",   w:2.0,  orig:"B"},
+  {id:"t_Orb",         n:"Orb",          abbr:"O",   w:2.0,  orig:"B"},
+  {id:"t_Point",       n:"Point",        abbr:"P",   w:2.2,  orig:"B"},
+  {id:"t_Quake",       n:"Quake",        abbr:"Q",   w:2.2,  orig:"B"},
+  {id:"t_Rush",        n:"Rush",         abbr:"R",   w:2.1,  orig:"B"},
+  {id:"t_Spike",       n:"Spike",        abbr:"S",   w:2.0,  orig:"B"},
+  {id:"t_Taper",       n:"Taper",        abbr:"T",   w:2.2,  orig:"B"},
+  {id:"t_TransPoint",  n:"Trans Point",  abbr:"TP",  w:null, orig:"B"},
+  {id:"t_Unite",       n:"Unite",        abbr:"U",   w:2.1,  orig:"B"},
+  {id:"t_Accel",       n:"Accel",        abbr:"A",   w:2.6,  orig:"U"},
+  {id:"t_BoundSpike",  n:"Bound Spike",  abbr:"BS",  w:2.0,  orig:"U"},
+  {id:"t_DiskBall",    n:"Disk Ball",    abbr:"DB",  w:3.2,  orig:"U"},
+  {id:"t_FreeBall",    n:"Free Ball",    abbr:"FB",  w:1.9,  orig:"U"},
+  {id:"t_Glide",       n:"Glide",        abbr:"GL",  w:2.5,  orig:"U"},
+  {id:"t_Hexa",        n:"Hexa",         abbr:"HX",  w:2.6,  orig:"U"},
+  {id:"t_Jolt",        n:"Jolt",         abbr:"J",   w:2.6,  orig:"U"},
+  {id:"t_Level",       n:"Level",        abbr:"LV",  w:2.7,  orig:"U"},
+  {id:"t_LowRush",     n:"Low Rush",     abbr:"LR",  w:1.9,  orig:"U"},
+  {id:"t_MetalNeedle", n:"Metal Needle", abbr:"MN",  w:2.8,  orig:"U"},
+  {id:"t_RubberAccel", n:"Rubber Accel", abbr:"RA",  w:3.1,  orig:"U"},
+  {id:"t_UnderFlat",   n:"Under Flat",   abbr:"UF",  w:2.0,  orig:"U"},
+  {id:"t_UnderNeedle", n:"Under Needle", abbr:"UN",  w:1.9,  orig:"U"},
+  {id:"t_Zap",         n:"Zap",          abbr:"Z",   w:2.5,  orig:"U"},
+  {id:"t_GearRush",    n:"Gear Rush",    abbr:"GR",  w:2.1,  orig:"C"},
+  {id:"t_Ignition",    n:"Ignition",     abbr:"I",   w:null, orig:"C"},
+  {id:"t_Kick",        n:"Kick",         abbr:"K",   w:2.2,  orig:"C"},
+  {id:"t_LowOrb",      n:"Low Orb",      abbr:"LO",  w:null, orig:"C"},
+  {id:"t_TransKick",   n:"Trans Kick",   abbr:"TK",  w:2.3,  orig:"C"},
+  {id:"t_Vortex",      n:"Vortex",       abbr:"V",   w:2.2,  orig:"C"},
+  {id:"t_WallBall",    n:"Wall Ball",    abbr:"WB",  w:null, orig:"C"},
+  {id:"t_WallWedge",   n:"Wall Wedge",   abbr:"WW",  w:null, orig:"C"},
+  {id:"t_Wedge",       n:"Wedge",        abbr:"W",   w:null, orig:"C"},
+  {id:"t_Yielding",    n:"Yielding",     abbr:"Y",   w:null, orig:"C"},
+  {id:"t_Operate",     n:"Operate (RI)", abbr:"OP",  w:14.1, orig:"C"},
+  {id:"t_Turbo",       n:"Turbo (RI)",   abbr:"TB",  w:12.7, orig:"C"},
+];
+
+const CUSTOM = {
+  "Lock Chips":[
+    {id:"lc_Bahamut",  n:"Bahamut",  w:1.7},{id:"lc_Cerberus",  n:"Cerberus",  w:1.7},
+    {id:"lc_Dran",     n:"Dran",     w:1.7},{id:"lc_Emperor",  n:"Emperor",  w:4.7},
+    {id:"lc_Eva",      n:"Eva",      w:null},{id:"lc_Fox",      n:"Fox",      w:1.7},
+    {id:"lc_Hells",    n:"Hells",    w:1.7},{id:"lc_Hornet",   n:"Hornet",   w:1.7},
+    {id:"lc_Knight",   n:"Knight",   w:1.7},{id:"lc_Kraken",   n:"Kraken",   w:1.7},
+    {id:"lc_Leon",     n:"Leon",     w:1.7},{id:"lc_Pegasus",  n:"Pegasus",  w:1.7},
+    {id:"lc_Perseus",  n:"Perseus",  w:1.7},{id:"lc_Phoenix",  n:"Phoenix",  w:1.7},
+    {id:"lc_Ragna",    n:"Ragna",    w:1.7},{id:"lc_Rhino",    n:"Rhino",    w:1.7},
+    {id:"lc_Sol",      n:"Sol",      w:1.7},{id:"lc_Stag",     n:"Stag",     w:1.7},
+    {id:"lc_Valkyrie", n:"Valkyrie", w:5.6},{id:"lc_Whale",    n:"Whale",    w:1.7},
+    {id:"lc_Wolf",     n:"Wolf",     w:1.7},{id:"lc_Wizard",   n:"Wizard",   w:1.7},
+  ],
+  "Main Blades":[
+    {id:"mb_Antler",  n:"Antler",  w:29.1},{id:"mb_Arc",     n:"Arc",     w:29.2},
+    {id:"mb_Blast",   n:"Blast",   w:32.8},{id:"mb_Brave",   n:"Brave",   w:31.2},
+    {id:"mb_Brush",   n:"Brush",   w:30.3},{id:"mb_Dark",    n:"Dark",    w:30.3},
+    {id:"mb_Eclipse", n:"Eclipse", w:32.3},{id:"mb_Fang",    n:"Fang",    w:30.4},
+    {id:"mb_Flame",   n:"Flame",   w:28.5},{id:"mb_Flare",   n:"Flare",   w:31.1},
+    {id:"mb_Fort",    n:"Fort",    w:29.0},{id:"mb_Hunt",    n:"Hunt",    w:31.6},
+    {id:"mb_Might",   n:"Might",   w:33.1},{id:"mb_Reaper",  n:"Reaper",  w:29.0},
+    {id:"mb_Volt",    n:"Volt",    w:31.0},{id:"mb_Wriggle", n:"Wriggle", w:29.3},
+  ],
+  "Metal Blades":[
+    {id:"mtb_Blitz",    n:"Blitz",    w:29.4},
+    {id:"mtb_Fortress", n:"Fortress", w:27.7},
+    {id:"mtb_Rage",     n:"Rage",     w:27.4},
+  ],
+  "Over Blades":[
+    {id:"ob_Break",n:"Break",w:4.9},{id:"ob_Flow",n:"Flow",w:3.7},{id:"ob_Guard",n:"Guard",w:3.4},
+  ],
+  "Assist Blades":[
+    {id:"ab_Assault",  n:"Assault",  w:5.0},{id:"ab_Bumper",   n:"Bumper",   w:5.3},
+    {id:"ab_Charge",   n:"Charge",   w:5.0},{id:"ab_Dual",     n:"Dual",     w:5.9},
+    {id:"ab_Erase",    n:"Erase",    w:null},{id:"ab_Free",    n:"Free",     w:5.8},
+    {id:"ab_Heavy",    n:"Heavy",    w:7.8},{id:"ab_Jaggy",    n:"Jaggy",    w:4.9},
+    {id:"ab_Knuckle",  n:"Knuckle",  w:null},{id:"ab_Massive", n:"Massive",  w:null},
+    {id:"ab_Round",    n:"Round",    w:4.7},{id:"ab_Slash",    n:"Slash",    w:4.7},
+    {id:"ab_Turn",     n:"Turn",     w:5.8},{id:"ab_Vertical", n:"Vertical", w:null},
+    {id:"ab_Wheel",    n:"Wheel",    w:7.2},{id:"ab_Zillion",  n:"Zillion",  w:null},
+  ],
+};
+
+// ══════════════════════════════
+// PART META (images + wiki colors)
+// ══════════════════════════════
+const I="https://static.wikia.nocookie.net/beyblade/images/";
+const PART_META={
+"bl_BlackShell":{img:I+"3/3c/BladeBlackShell.png/revision/latest?cb=20250528201216",colors:[]},
+"bl_CobaltDragoon":{img:I+"c/c2/BladeCobaltDragoon.png/revision/latest?cb=20250528202711",colors:[]},
+"bl_CobaltDrake":{img:I+"2/2f/BladeCobaltDrake.png/revision/latest?cb=20250528202030",colors:[]},
+"bl_CrimsonGaruda":{img:I+"6/60/BladeCrimsonGaruda.png/revision/latest?cb=20241015052049",colors:[]},
+"bl_DranDagger":{img:I+"c/c8/BladeDranDagger.png/revision/latest?cb=20250528202141",colors:["Metal Coat: Black","Metal Coat: White"]},
+"bl_DranStrike":{img:I+"6/67/BladeDranStrike.png/revision/latest?cb=20260313031347",colors:[]},
+"bl_DranSword":{img:I+"5/5f/BladeDranSword.png/revision/latest?cb=20250814202546",colors:["Katsushika City Collaboration Ver.","Special Ver.","Red Ver.","Metal Coat: Bronze","Metal Coat: Silver","Metal Coat: Gold","Sushiro Ver.","Metal Coat: Blue","Metal Coat: White","Metal Coat: Red"]},
+"bl_DranzerSpiral":{img:I+"c/ce/BladeDranzerSpiral.png/revision/latest?cb=20230807194254",colors:[]},
+"bl_DrigerSlash":{img:I+"c/c5/BladeDrigerSlash.png/revision/latest?cb=20240322182711",colors:[]},
+"bl_HellsChain":{img:I+"8/83/BladeHellsChain.png/revision/latest?cb=20250528203625",colors:[]},
+"bl_HellsScythe":{img:I+"e/e4/BladeHellsScythe.png/revision/latest?cb=20250817035337",colors:["Metal Coat: Gold"]},
+"bl_KnightLance":{img:I+"c/cb/BladeKnightLance.png/revision/latest?cb=20230808063816",colors:[]},
+"bl_KnightShield":{img:I+"9/9c/BladeKnightShield.png/revision/latest?cb=20250609060142",colors:["Metal Coat: Gold"]},
+"bl_LeonClaw":{img:I+"9/93/BladeLeonClaw.png/revision/latest?cb=20230918165658",colors:["Metal Coat: Gold"]},
+"bl_PhoenixFeather":{img:I+"9/96/BladePhoenixFeather.png/revision/latest?cb=20231207074705",colors:["Metal Coat: Orange"]},
+"bl_PhoenixWing":{img:I+"2/2d/BladePhoenixWing.png/revision/latest?cb=20231115091927",colors:["Metal Coat: Red","Metal Coat: Black","Metal Coat: Navy"]},
+"bl_RhinoHorn":{img:I+"4/41/BladeRhinoHorn.png/revision/latest?cb=20250528201123",colors:[]},
+"bl_SamuraiCalibur":{img:I+"a/ab/BladeSamuraiCalibur.png/revision/latest?cb=20250715051328",colors:[]},
+"bl_SharkEdge":{img:I+"2/2e/BladeSharkEdge.png/revision/latest?cb=20230812203549",colors:[]},
+"bl_ShelterDrake":{img:I+"8/89/BladeShelterDrake.png/revision/latest?cb=20250530222732",colors:[]},
+"bl_SphinxCowl":{img:I+"3/31/BladeSphinxCowl.png/revision/latest?cb=20250528201304",colors:[]},
+"bl_TriceraPress":{img:I+"4/48/BladeTriceraPress.png/revision/latest?cb=20250515033251",colors:[]},
+"bl_TyrannoBeat":{img:I+"f/ff/BladeTyrannoBeat.png/revision/latest?cb=20240415173927",colors:["Jurassic World Ver."]},
+"bl_UnicornSting":{img:I+"1/15/BladeUnicornSting.png/revision/latest?cb=20240115194629",colors:[]},
+"bl_ViperTail":{img:I+"9/9d/BladeViperTail.png/revision/latest?cb=20250818205656",colors:[]},
+"bl_WeissTiger":{img:I+"3/37/BladeWeissTiger.png/revision/latest?cb=20240515052303",colors:[]},
+"bl_WhaleWave":{img:I+"8/89/BladeWhaleWave.png/revision/latest?cb=20240812022438",colors:[]},
+"bl_WizardArrow":{img:I+"4/44/BladeWizardArrow.png/revision/latest?cb=20250626062049",colors:["Blue Ver."]},
+"bl_WyvernGale":{img:I+"3/3d/BladeWyvernGale.png/revision/latest?cb=20231115091914",colors:[]},
+"bl_XenoXcalibur":{img:I+"b/bb/BladeXenoXcalibur.png/revision/latest?cb=20250322231907",colors:[]},
+"bl_DracielShield":{img:I+"7/79/BladeDracielShield.png/revision/latest?cb=20241202045350",colors:[]},
+"bl_RockLeone":{img:I+"a/a2/BladeRockLeone.png/revision/latest?cb=20250719051128",colors:[]},
+"bl_BiteCroc":{img:I+"9/97/Bite_Croc_3-60LF.jpeg/revision/latest?cb=20241003085305",colors:[]},
+"bl_GillShark":{img:I+"3/3b/Gill_Shark_4-70O.jpeg/revision/latest?cb=20250820040436",colors:[]},
+"bl_KnifeShinobi":{img:I+"2/25/BladeKnifeShinobi.png/revision/latest?cb=20250815182407",colors:["Metal Coat: Blue"]},
+"bl_TriceraSpiky":{img:I+"7/78/BladeTriceraSpiky.png/revision/latest?cb=20260207193346",colors:["Jurassic World Ver."]},
+"bl_RoarTyranno":{img:I+"5/5e/Roar_Tyranno_9-60GF.jpeg/revision/latest?cb=20241003084111",colors:["Jurassic World Ver."]},
+"bl_SavageBear":{img:I+"7/7f/Savage_Bear_3-60S.jpg/revision/latest?cb=20241003084229",colors:[]},
+"bl_SteelSamurai":{img:I+"f/fb/Steel_Samurai_4-80T.jpeg/revision/latest?cb=20240515224953",colors:["Metal Coat: White"]},
+"bl_TackleGoat":{img:I+"c/cd/Tackle_Goat_2-70N.jpeg/revision/latest?cb=20250815160707",colors:[]},
+"bl_TalonPtera":{img:I+"f/f8/Talon_Ptera_3-80B.jpeg/revision/latest?cb=20240630193118",colors:["Jurassic World Ver."]},
+"bl_TuskMammoth":{img:I+"e/e2/Tusk_Mammoth_3-60T.jpeg/revision/latest?cb=20240321181854",colors:["Metal Coat: Black"]},
+"bl_StormPegasis":{img:I+"2/2a/StormPegasis_3-70RA.jpeg/revision/latest?cb=20240717033658",colors:[]},
+"bl_VictoryValkyrie":{img:I+"6/6b/VictoryValkyrie_2-60RA.jpeg/revision/latest?cb=20240717033721",colors:[]},
+"bl_AeroPegasus":{img:I+"5/58/BladeAeroPegasus.png/revision/latest?cb=20250528202546",colors:["Double Metal Coat: Blue×Green","Red Version"]},
+"bl_ClockMirage":{img:I+"7/7c/BladeClockMirage.png/revision/latest?cb=20250912034434",colors:[]},
+"bl_DranBuster":{img:I+"d/db/BladeDranBuster.png/revision/latest?cb=20250528202327",colors:["Special Ver.","Metal Coat: Red","Metal Coat: White","Metal Coat: Blue FC Barcelona","Metal Coat: Black","Metal Coat: Cyan","Metal Coat: Violet"]},
+"bl_GhostCircle":{img:I+"7/7a/BladeGhostCircle.png/revision/latest?cb=20241115025132",colors:[]},
+"bl_GolemRock":{img:I+"2/27/BladeGolemRock.png/revision/latest?cb=20250115052241",colors:[]},
+"bl_HellsHammer":{img:I+"6/67/BladeHellsHammer.png/revision/latest?cb=20240215060611",colors:["Metal Coat: Blue","Metal Coat: Red FC Barcelona"]},
+"bl_HoverWyvern":{img:I+"7/71/Hover_Wyvern_3-85N.jpeg/revision/latest?cb=20250612062923",colors:["Metal Coat: Violet"]},
+"bl_ImpactDrake":{img:I+"b/b1/BladeImpactDrake.png/revision/latest?cb=20241115024018",colors:[]},
+"bl_KnightMail":{img:I+"f/fc/BladeKnightMail.png/revision/latest?cb=20241015034144",colors:["Metal Coat: Navy"]},
+"bl_LeonCrest":{img:I+"c/c7/BladeLeonCrest.png/revision/latest?cb=20240712055426",colors:[]},
+"bl_MeteorDragoon":{img:I+"b/b7/BladeMeteorDragoon.png/revision/latest?cb=20251114032400",colors:[]},
+"bl_MummyCurse":{img:I+"a/ab/BladeMummyCurse.png/revision/latest?cb=20251114034130",colors:["Counter Form"]},
+"bl_OrochiCluster":{img:I+"d/d0/BladeOrochiCluster.png/revision/latest?cb=20260121134642",colors:[]},
+"bl_PhoenixRudder":{img:I+"0/0f/BladePhoenixRudder.png/revision/latest?cb=20250528203411",colors:[]},
+"bl_SamuraiSaber":{img:I+"d/de/BladeSamuraiSaber.png/revision/latest?cb=20241015033005",colors:[]},
+"bl_ScorpioSpear":{img:I+"8/89/BladeScorpioSpear.png/revision/latest?cb=20250614081207",colors:[]},
+"bl_SharkScale":{img:I+"e/e0/BladeSharkScale.png/revision/latest?cb=20250715051433",colors:[]},
+"bl_ShinobiShadow":{img:I+"4/48/BladeShinobiShadow.png/revision/latest?cb=20250528201917",colors:[]},
+"bl_SilverWolf":{img:I+"f/f1/BladeSilverWolf.png/revision/latest?cb=20240913034202",colors:[]},
+"bl_WizardRod":{img:I+"a/a3/BladeWizardRod.png/revision/latest?cb=20240222003334",colors:["Special Ver.","Metal Coat: Gold"]},
+"bl_BulletGriffon":{img:I+"d/d2/RatchetBladeBulletGriffon.png/revision/latest?cb=20260313031310",colors:[]},
+"bl_CutterShinobi":{img:I+"f/fc/RatchetBladeCutterShinobi.png/revision/latest?cb=20260214014614",colors:[]},
+"bl_RampartAegis":{img:I+"3/35/RatchetBladeRampartAegis.png/revision/latest?cb=20260214014621",colors:[]},
+"bl_RocketGriffon":{img:I+"d/d2/RatchetBladeBulletGriffon.png/revision/latest?cb=20260313031310",colors:[]},
+"bl_ValorBison":{img:I+"f/ff/Valor_Bison_FB.jpeg/revision/latest?cb=20260222093732",colors:[]},
+"r_0-60":{img:I+"2/20/Ratchet0-60.png/revision/latest?cb=20251015205044",colors:[]},
+"r_0-70":{img:I+"0/08/Ratchet0-70.png/revision/latest?cb=20250415034357",colors:[]},
+"r_0-80":{img:I+"a/ac/Ratchet0-80.png/revision/latest?cb=20241115025146",colors:[]},
+"r_1-50":{img:I+"c/c2/Ratchet1-50.png/revision/latest?cb=20260214040444",colors:[]},
+"r_1-60":{img:I+"3/3a/Ratchet1-60.png/revision/latest?cb=20240215060550",colors:[]},
+"r_1-70":{img:I+"f/f1/Ratchet1-70.png/revision/latest?cb=20250715052629",colors:[]},
+"r_1-80":{img:I+"4/46/Ratchet1-80.png/revision/latest?cb=20240513065345",colors:[]},
+"r_2-60":{img:I+"a/a6/Ratchet2-60.png/revision/latest?cb=20240614034142",colors:["Special Ver.","Black Ver."]},
+"r_2-70":{img:I+"c/cb/Ratchet2-70.png/revision/latest?cb=20241015033717",colors:[]},
+"r_2-80":{img:I+"d/dc/Ratchet2-80.png/revision/latest?cb=20240527053613",colors:[]},
+"r_3-60":{img:I+"1/1b/Ratchet3-60.png/revision/latest?cb=20240913063429",colors:["Special Ver.","Bronze Ver.","Silver Ver.","Gold Ver."]},
+"r_3-70":{img:I+"d/da/Ratchet3-70.png/revision/latest?cb=20240215060619",colors:["Red Ver."]},
+"r_3-80":{img:I+"6/69/Ratchet3-80.png/revision/latest?cb=20250609060206",colors:["Black Ver."]},
+"r_3-85":{img:I+"b/b8/Ratchet3-85.png/revision/latest?cb=20260202220915",colors:["Metal Coat: Navy"]},
+"r_4-50":{img:I+"2/2a/Ratchet4-50.png/revision/latest?cb=20250715051521",colors:[]},
+"r_4-55":{img:I+"7/7a/Ratchet4-55.png/revision/latest?cb=20250605000210",colors:[]},
+"r_4-60":{img:I+"4/46/Ratchet4-60.png/revision/latest?cb=20250317055414",colors:["Gold Ver.","Clear Ver.","Red Ver."]},
+"r_4-70":{img:I+"1/16/Ratchet4-70.png/revision/latest?cb=20240524163324",colors:[]},
+"r_4-80":{img:I+"a/ae/Ratchet4-80.png/revision/latest?cb=20250608045210",colors:["Blue Ver."]},
+"r_5-60":{img:I+"f/f7/Ratchet5-60.png/revision/latest?cb=20230918165846",colors:["Gold Ver."]},
+"r_5-70":{img:I+"c/cc/Ratchet5-70.png/revision/latest?cb=20240215060642",colors:["Gold Ver."]},
+"r_5-80":{img:I+"4/42/Ratchet5-80.png/revision/latest?cb=20230918165909",colors:[]},
+"r_6-60":{img:I+"5/53/Ratchet6-60.png/revision/latest?cb=20250215050512",colors:[]},
+"r_6-70":{img:I+"1/14/Ratchet6-70.png/revision/latest?cb=20250715051344",colors:[]},
+"r_6-80":{img:I+"9/98/Ratchet6-80.png/revision/latest?cb=20250215050704",colors:[]},
+"r_7-55":{img:I+"a/af/Ratchet7-55.png/revision/latest?cb=20251114034152",colors:[]},
+"r_7-60":{img:I+"3/39/Ratchet7-60.png/revision/latest?cb=20240712055419",colors:[]},
+"r_7-70":{img:I+"3/38/Ratchet7-70.png/revision/latest?cb=20241015043216",colors:[]},
+"r_7-80":{img:I+"d/d7/Ratchet7-80.png/revision/latest?cb=20250115050921",colors:[]},
+"r_8-70":{img:I+"c/ca/Ratchet8-70.png/revision/latest?cb=20260214040608",colors:[]},
+"r_9-60":{img:I+"a/af/Ratchet9-60.png/revision/latest?cb=20250530201949",colors:[]},
+"r_9-65":{img:I+"2/25/Ratchet9-65.png/revision/latest?cb=20250912034512",colors:[]},
+"r_9-70":{img:I+"8/86/Ratchet9-70.png/revision/latest?cb=20240712055351",colors:[]},
+"r_9-80":{img:I+"6/61/Ratchet9-80.png/revision/latest?cb=20240115193705",colors:[]},
+"r_M-85":{img:I+"7/79/RatchetM-85.png/revision/latest?cb=20250515033258",colors:[]},
+"t_Ball":{img:I+"8/8c/BitBall.png/revision/latest?cb=20250608045235",colors:["Black×Gold","Silver×White"]},
+"t_Cyclone":{img:I+"f/fb/BitCyclone.png/revision/latest?cb=20240614034151",colors:[]},
+"t_Dot":{img:I+"b/b2/BitDot.png/revision/latest?cb=20240614034756",colors:[]},
+"t_Elevate":{img:I+"3/38/BitElevate.png/revision/latest?cb=20240812022551",colors:[]},
+"t_Flat":{img:I+"b/b0/BitFlat.png/revision/latest?cb=20240913063436",colors:["Special Ver.","Black×Gold","Silver×White"]},
+"t_FreeFlat":{img:I+"b/b4/BitFreeFlat.png/revision/latest?cb=20260313031408",colors:[]},
+"t_GearBall":{img:I+"9/97/BitGearBall.png/revision/latest?cb=20231115091947",colors:[]},
+"t_GearFlat":{img:I+"b/bd/BitGearFlat.png/revision/latest?cb=20231115091943",colors:[]},
+"t_GearNeedle":{img:I+"9/9d/BitGearNeedle.png/revision/latest?cb=20240116063659",colors:[]},
+"t_GearPoint":{img:I+"3/36/BitGearPoint.png/revision/latest?cb=20240115194709",colors:[]},
+"t_HighNeedle":{img:I+"2/2f/BitHighNeedle.png/revision/latest?cb=20230808063846",colors:[]},
+"t_HighTaper":{img:I+"b/b5/BitHighTaper.png/revision/latest?cb=20231014024512",colors:[]},
+"t_LowFlat":{img:I+"0/0e/BitLowFlat.png/revision/latest?cb=20230812203610",colors:[]},
+"t_Merge":{img:I+"5/5e/BitMerge.png/revision/latest?cb=20250715051358",colors:[]},
+"t_Needle":{img:I+"2/26/BitNeedle.png/revision/latest?cb=20250609060238",colors:["Black×Gold","Silver×White"]},
+"t_Orb":{img:I+"1/17/BitOrb.png/revision/latest?cb=20230918165916",colors:[]},
+"t_Point":{img:I+"b/bf/BitPoint.png/revision/latest?cb=20230918165854",colors:["Gold Ver."]},
+"t_Quake":{img:I+"e/ed/BitQuake.png/revision/latest?cb=20240503184404",colors:[]},
+"t_Rush":{img:I+"e/e1/BitRush.png/revision/latest?cb=20231014022216",colors:[]},
+"t_Spike":{img:I+"7/7d/BitSpike.png/revision/latest?cb=20231014012757",colors:[]},
+"t_Taper":{img:I+"a/ad/BitTaper.png/revision/latest?cb=20250317055452",colors:["Gold Ver.","Black×Gold","Silver×White"]},
+"t_TransPoint":{img:I+"d/d0/BitTransPoint.png/revision/latest?cb=20241015052109",colors:[]},
+"t_Unite":{img:I+"a/a0/BitUnite.png/revision/latest?cb=20240515052315",colors:[]},
+"t_Accel":{img:I+"8/8e/BitAccel.png/revision/latest?cb=20240215060559",colors:["Red Ver."]},
+"t_BoundSpike":{img:I+"8/88/BitBoundSpike.png/revision/latest?cb=20241015034935",colors:["Navy"]},
+"t_DiskBall":{img:I+"1/10/BitDiskBall.png/revision/latest?cb=20240215060650",colors:["Gold Ver."]},
+"t_FreeBall":{img:I+"7/78/BitFreeBall.png/revision/latest?cb=20240913034835",colors:[]},
+"t_Glide":{img:I+"d/d5/BitGlide.png/revision/latest?cb=20240712055345",colors:[]},
+"t_Hexa":{img:I+"8/8c/BitHexa.png/revision/latest?cb=20240215060626",colors:[]},
+"t_Jolt":{img:I+"1/10/BitJolt.png/revision/latest?cb=20251114032437",colors:[]},
+"t_Level":{img:I+"5/56/BitLevel.png/revision/latest?cb=20241015033722",colors:[]},
+"t_LowRush":{img:I+"3/36/BitLowRush.png/revision/latest?cb=20241115024042",colors:[]},
+"t_MetalNeedle":{img:I+"4/47/BitMetalNeedle.png/revision/latest?cb=20240416003755",colors:[]},
+"t_RubberAccel":{img:I+"5/5a/BitRubberAccel.png/revision/latest?cb=20241015044738",colors:[]},
+"t_UnderFlat":{img:I+"5/55/BitUnderFlat.png/revision/latest?cb=20250715051536",colors:[]},
+"t_UnderNeedle":{img:I+"1/16/BitUnderNeedle.png/revision/latest?cb=20250115052342",colors:[]},
+"t_Zap":{img:I+"6/61/BitZap.png/revision/latest?cb=20250415034411",colors:[]},
+"t_GearRush":{img:I+"5/58/BitGearRush.png/revision/latest?cb=20250415032926",colors:[]},
+"t_Ignition":{img:I+"3/37/BitIgnition.png/revision/latest?cb=20260214040456",colors:[]},
+"t_Kick":{img:I+"4/47/BitKick.png/revision/latest?cb=20250314041641",colors:[]},
+"t_LowOrb":{img:I+"f/f4/BitLowOrb.png/revision/latest?cb=20250215050618",colors:[]},
+"t_TransKick":{img:I+"5/5d/BitTransKick.png/revision/latest?cb=20250812023538",colors:[]},
+"t_Vortex":{img:I+"f/f9/BitVortex.png/revision/latest?cb=20250215050522",colors:[]},
+"t_WallBall":{img:I+"3/38/BitWallBall.png/revision/latest?cb=20250613042119",colors:[]},
+"t_WallWedge":{img:I+"9/9a/BitWallWedge.png/revision/latest?cb=20260115043200",colors:[]},
+"t_Wedge":{img:I+"2/29/BitWedge.png/revision/latest?cb=20250215050716",colors:["Gold Ver."]},
+"t_Yielding":{img:I+"f/f1/BitYielding.png/revision/latest?cb=20260214043217",colors:[]},
+"lc_Bahamut":{img:I+"e/e4/LockChipBahamut.png/revision/latest?cb=20260214040353",colors:["Expand Holo Sticker"]},
+"lc_Cerberus":{img:I+"b/bd/LockChipCerberus.png/revision/latest?cb=20250613042044",colors:[]},
+"lc_Dran":{img:I+"6/6c/LockChipDran.png/revision/latest?cb=20250215050437",colors:["Special Ver.","Metal Coat: Blue","Clear Black Version","SP Cross Holo Version"]},
+"lc_Emperor":{img:I+"2/2b/LockChipEmperor.png/revision/latest?cb=20251015205115",colors:[]},
+"lc_Eva":{img:null,colors:["Unit-00 Version","Unit-01 Version","Unit-02 Version"]},
+"lc_Fox":{img:I+"6/65/LockChipFox.png/revision/latest?cb=20250415032832",colors:[]},
+"lc_Hells":{img:I+"7/7a/LockChipHells.png/revision/latest?cb=20250314041513",colors:[]},
+"lc_Hornet":{img:I+"8/88/LockChipHornet.png/revision/latest?cb=20250820214840",colors:[]},
+"lc_Knight":{img:I+"c/c2/LockChipKnight.png/revision/latest?cb=20260214040509",colors:["Expand Holo Sticker"]},
+"lc_Kraken":{img:I+"d/d4/LockChipKraken.png/revision/latest?cb=20250820214847",colors:[]},
+"lc_Leon":{img:I+"1/1a/LockChipLeon.png/revision/latest?cb=20250515031153",colors:["Red Ver."]},
+"lc_Pegasus":{img:I+"8/86/LockChipPegasus.png/revision/latest?cb=20250613042010",colors:[]},
+"lc_Perseus":{img:I+"6/6a/LockChipPerseus.png/revision/latest?cb=20250215050629",colors:[]},
+"lc_Phoenix":{img:I+"7/7a/LockChipPhoenix.png/revision/latest?cb=20260115042959",colors:[]},
+"lc_Ragna":{img:I+"9/9b/LockChipRagna.png/revision/latest?cb=20260214043116",colors:["Expand Holo Sticker"]},
+"lc_Rhino":{img:I+"d/d7/LockChipRhino.png/revision/latest?cb=20250404235409",colors:[]},
+"lc_Sol":{img:I+"6/6e/LockChipSol.png/revision/latest?cb=20250812023449",colors:[]},
+"lc_Stag":{img:I+"d/d9/LockChipStag.png/revision/latest?cb=20250820214853",colors:[]},
+"lc_Valkyrie":{img:I+"b/b4/LockChipValkyrie.png/revision/latest?cb=20250715032014",colors:[]},
+"lc_Whale":{img:I+"7/75/LockChipWhale.png/revision/latest?cb=20250613042706",colors:[]},
+"lc_Wolf":{img:I+"6/6a/LockChipWolf.png/revision/latest?cb=20251015204952",colors:[]},
+"lc_Wizard":{img:I+"4/43/LockChipWizard.png/revision/latest?cb=20250215050531",colors:[]},
+"mb_Arc":{img:I+"f/f5/MainBladeArc.png/revision/latest?cb=20250801190723",colors:[]},
+"mb_Blast":{img:I+"5/5f/MainBladeBlast.png/revision/latest?cb=20250613042021",colors:[]},
+"mb_Brave":{img:I+"d/df/MainBladeBrave.png/revision/latest?cb=20250727212836",colors:[]},
+"mb_Brush":{img:I+"e/e7/MainBladeBrush.png/revision/latest?cb=20250415032849",colors:[]},
+"mb_Dark":{img:I+"e/e0/MainBladeDark.png/revision/latest?cb=20250215050646",colors:[]},
+"mb_Fang":{img:I+"a/ae/MainBladeFang.png/revision/latest?cb=20250515031203",colors:["Red Ver."]},
+"mb_Flame":{img:I+"9/99/MainBladeFlame.png/revision/latest?cb=20250613042102",colors:[]},
+"mb_Flare":{img:I+"d/d3/MainBladeFlare.png/revision/latest?cb=20260115043015",colors:[]},
+"mb_Fort":{img:I+"3/3b/MainBladeFort.png/revision/latest?cb=20250814033238",colors:[]},
+"mb_Hunt":{img:I+"4/4d/MainBladeHunt.png/revision/latest?cb=20251015205016",colors:[]},
+"mb_Might":{img:I+"0/07/MainBladeMight.png/revision/latest?cb=20251015205128",colors:[]},
+"mb_Reaper":{img:I+"a/a4/MainBladeReaper.png/revision/latest?cb=20250314041624",colors:[]},
+"mb_Volt":{img:I+"0/04/MainBladeVolt.png/revision/latest?cb=20260218211332",colors:["Metal Coat: Gold"]},
+"mb_Wriggle":{img:I+"1/12/MainBladeWriggle.png/revision/latest?cb=20250814033242",colors:[]},
+"mtb_Blitz":{img:I+"2/28/MetalBladeBlitz.png/revision/latest?cb=20260214040423",colors:[]},
+"mtb_Fortress":{img:I+"8/81/MetalBladeFortress.png/revision/latest?cb=20260214040527",colors:[]},
+"mtb_Rage":{img:I+"d/d0/MetalBladeRage.png/revision/latest?cb=20260214043148",colors:[]},
+"ob_Break":{img:I+"3/38/OverBladeBreak.png/revision/latest?cb=20260214040407",colors:[]},
+"ob_Flow":{img:I+"0/00/OverBladeFlow.png/revision/latest?cb=20260214043129",colors:[]},
+"ob_Guard":{img:I+"8/8b/OverBladeGuard.png/revision/latest?cb=20260214040517",colors:[]},
+"ab_Assault":{img:I+"2/24/AssistBladeAssault.png/revision/latest?cb=20250613042027",colors:[]},
+"ab_Bumper":{img:I+"a/aa/AssistBladeBumper.png/revision/latest?cb=20250215050654",colors:[]},
+"ab_Charge":{img:I+"8/89/AssistBladeCharge.png/revision/latest?cb=20250314041928",colors:[]},
+"ab_Erase":{img:I+"0/0c/AssistBladeErase.png/revision/latest?cb=20260214043159",colors:[]},
+"ab_Free":{img:I+"b/be/AssistBladeFree.png/revision/latest?cb=20251015205027",colors:[]},
+"ab_Heavy":{img:I+"0/0b/AssistBladeHeavy.png/revision/latest?cb=20251015205145",colors:[]},
+"ab_Jaggy":{img:I+"1/14/AssistBladeJaggy.png/revision/latest?cb=20250415032856",colors:[]},
+"ab_Knuckle":{img:I+"1/11/AssistBladeKnuckle.png/revision/latest?cb=20260214040432",colors:[]},
+"ab_Massive":{img:I+"2/23/AssistBladeMassive.png/revision/latest?cb=20250613042947",colors:[]},
+"ab_Round":{img:I+"3/3c/AssistBladeRound.png/revision/latest?cb=20250215050554",colors:[]},
+"ab_Slash":{img:I+"c/cb/AssistBladeSlash.png/revision/latest?cb=20250215050454",colors:[]},
+"ab_Turn":{img:I+"2/2c/AssistBladeTurn.png/revision/latest?cb=20250314041629",colors:["Red Ver."]},
+"ab_Vertical":{img:I+"6/65/AssistBladeVertical.png/revision/latest?cb=20260214040558",colors:[]},
+"ab_Wheel":{img:I+"3/3d/AssistBladeWheel.png/revision/latest?cb=20250613042109",colors:[]},
+"ab_Zillion":{img:I+"3/37/AssistBladeZillion.png/revision/latest?cb=20260115043035",colors:[]},
+};
+[...BLADES,...RATCHETS,...BITS,...Object.values(CUSTOM).flat()].forEach(p=>{
+  const m=PART_META[p.id];
+  if(m){p.img=m.img||null;p.colors=m.colors||[];}
+  else{p.img=null;p.colors=[];}
+});
+
+// ══════════════════════════════
+// PRODUCTS
+// ══════════════════════════════
+const PRODUCTS = [
+  {id:"BX-01", name:"BX-01 Starter – DranSword 3-60F",    parts:["bl_DranSword","r_3-60","t_Flat"]},
+  {id:"BX-02", name:"BX-02 Starter – HellsScythe 4-60T",  parts:["bl_HellsScythe","r_4-60","t_Taper"]},
+  {id:"BX-03", name:"BX-03 Starter – KnightLance 5-60P",  parts:["bl_KnightLance","r_5-60","t_Point"]},
+  {id:"BX-04", name:"BX-04 Starter – WyvernGale 2-60B",   parts:["bl_WyvernGale","r_2-60","t_Ball"]},
+  {id:"BX-05", name:"BX-05 Starter – PhoenixWing 5-80F",  parts:["bl_PhoenixWing","r_5-80","t_Flat"]},
+  {id:"BX-06", name:"BX-06 Starter – LeonClaw 3-60N",     parts:["bl_LeonClaw","r_3-60","t_Needle"]},
+  {id:"BX-07", name:"BX-07 2-Pack – DranSword / HellsScythe", parts:["bl_DranSword","r_3-60","t_Flat","bl_HellsScythe","r_4-60","t_Taper"]},
+  {id:"BX-09", name:"BX-09 Starter – KnightShield 3-60B", parts:["bl_KnightShield","r_3-60","t_Ball"]},
+  {id:"BX-11", name:"BX-11 Starter – HellsHammer 4-70T",  parts:["bl_HellsHammer","r_4-70","t_Taper"]},
+  {id:"BX-12", name:"BX-12 Starter – CobaltDrake 3-80B",  parts:["bl_CobaltDrake","r_3-80","t_Ball"]},
+  {id:"BX-16", name:"BX-16 Starter – SharkEdge 5-60R",    parts:["bl_SharkEdge","r_5-60","t_Rush"]},
+  {id:"BX-17", name:"BX-17 Starter – DranBuster 9-70P",   parts:["bl_DranBuster","r_9-70","t_Point"]},
+  {id:"BX-22", name:"BX-22 Starter – UnicornSting 3-80T", parts:["bl_UnicornSting","r_3-80","t_Taper"]},
+  {id:"BX-23", name:"BX-23 Starter – WizardArrow 4-80P",  parts:["bl_WizardArrow","r_4-80","t_Point"]},
+  {id:"BX-25", name:"BX-25 Starter – SamuraiSaber 5-70GF",parts:["bl_SamuraiSaber","r_5-70","t_GearFlat"]},
+  {id:"BX-34", name:"BX-34 Starter – GolemRock 7-60D",    parts:["bl_GolemRock","r_7-60","t_Dot"]},
+  {id:"BX-40", name:"BX-40 Starter – ScorpioSpear 9-80B", parts:["bl_ScorpioSpear","r_9-80","t_Ball"]},
+];
+
+// ══════════════════════════════
+// NEWS DATA (static + user-submitted)
+// ══════════════════════════════
+const STATIC_NEWS = [
+  {id:"sn1", type:"tournament", title:"טורניר ישראלי – Q2 2026", body:"טורניר Beyblade X ישראלי יתקיים בחודש הבא! פרטים נוספים בקרוב בערוץ הדיסקורד של הקהילה.", date:"2026-03-20", author:"מנהל"},
+  {id:"sn2", type:"release",    title:"BX-40 – ScorpioSpear יצא לשוק!", body:"חלק חדש: ScorpioSpear 9-80B – המשקל הצפוי גבוה במיוחד. זמין בחנויות ובAmazon Japan.", date:"2026-03-15", author:"עדכון"},
+  {id:"sn3", type:"sale",       title:"מכירה: בליידים מ-Aliexpress", body:"פוסט קהילתי: כמה חברים מצאו מחירים טובים על מוצרי BX-01 ו-BX-02 ב-Aliexpress ומשלוח לישראל.", date:"2026-03-10", author:"קהילה"},
+  {id:"sn4", type:"release",    title:"Custom Line – Metal Blades חדשים", body:"שלושה Metal Blades חדשים הוכרזו: Blitz, Fortress ו-Rage – כולם לInfinity Series.", date:"2026-02-28", author:"עדכון"},
+  {id:"sn5", type:"community",  title:"איפה לקנות בישראל?", body:"רשימה עדכנית: שנסונג פייל, ABC טויס, ואמזון ישראל. בנוסף יש קבוצת פייסבוק 'Beyblade X ישראל' לרכישה יד שנייה.", date:"2026-02-20", author:"קהילה"},
+];
+
+function getNewsLocal(){return JSON.parse(localStorage.getItem('bx_news_'+getCurUser())||'[]')}
+function saveNewsLocal(arr){localStorage.setItem('bx_news_'+getCurUser(),JSON.stringify(arr))}
+
+const PRESET_COLORS = [
+  {n:"שקוף",    hex:"#a8d8ea"},{n:"לבן",     hex:"#f8f9fa"},
+  {n:"שחור",   hex:"#2c2c2c"},{n:"כסף",     hex:"#bdc3c7"},
+  {n:"זהב",    hex:"#f1c40f"},{n:"אדום",    hex:"#e74c3c"},
+  {n:"כחול",   hex:"#3498db"},{n:"כחול כהה",hex:"#1a237e"},
+  {n:"ירוק",   hex:"#2ecc71"},{n:"סגול",    hex:"#9b59b6"},
+  {n:"כתום",   hex:"#e67e22"},{n:"ורוד",    hex:"#e91e63"},
+  {n:"צהוב",   hex:"#f9ca24"},{n:"אפור",    hex:"#7f8c8d"},
+  {n:"חום",    hex:"#795548"},{n:"ניאון ירוק",hex:"#39ff14"},
+];
+
+// ══════════════════════════════
+// USER SYSTEM
+// ══════════════════════════════
+function getUsers(){return JSON.parse(localStorage.getItem('bx_users')||'{}')}
+function saveUsers(u){localStorage.setItem('bx_users',JSON.stringify(u))}
+function getCurUser(){return localStorage.getItem('bx_cur')||''}
+function setCurUser(u){localStorage.setItem('bx_cur',u)}
+
+function showAuthTab(t){
+  document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',i===(t==='login'?0:1)));
+  document.getElementById('login-form').style.display=t==='login'?'block':'none';
+  document.getElementById('reg-form').style.display=t==='register'?'block':'none';
+}
+
+function login(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  const users=getUsers();
+  if(!users[u]||users[u].pass!==p){document.getElementById('li-err').textContent='שם משתמש או סיסמה שגויים';return}
+  setCurUser(u);startApp();
+}
+
+function register(){
+  const dn=document.getElementById('rg-dn').value.trim();
+  const u=document.getElementById('rg-u').value.trim().toLowerCase();
+  const p=document.getElementById('rg-p').value;
+  const p2=document.getElementById('rg-p2').value;
+  const err=document.getElementById('rg-err');
+  if(!dn||!u||!p){err.textContent='יש למלא את כל השדות';return}
+  if(!/^[a-z0-9_]+$/.test(u)){err.textContent='שם משתמש: אותיות אנגליות/מספרים/קו תחתון בלבד';return}
+  if(p!==p2){err.textContent='הסיסמאות אינן תואמות';return}
+  const users=getUsers();
+  if(users[u]){err.textContent='שם המשתמש תפוס';return}
+  users[u]={dn,pass:p};saveUsers(users);
+  setCurUser(u);startApp();
+}
+
+function logout(){setCurUser('');document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='flex'}
+
+// ══════════════════════════════
+// COLLECTION
+// ══════════════════════════════
+function getCol(){return JSON.parse(localStorage.getItem('bx_col_'+getCurUser())||'{}')}
+function saveCol(c){localStorage.setItem('bx_col_'+getCurUser(),JSON.stringify(c))}
+function getCopies(partId){return getCol()[partId]||[]}
+
+function addCopy(partId,data){
+  const c=getCol();
+  if(!c[partId])c[partId]=[];
+  c[partId].push({id:Date.now()+'_'+Math.floor(Math.random()*9999),...data});
+  saveCol(c);updateStats();
+}
+function updateCopy(partId,copyId,data){
+  const c=getCol();const idx=(c[partId]||[]).findIndex(x=>x.id===copyId);
+  if(idx>=0){c[partId][idx]={id:copyId,...data};saveCol(c);updateStats();}
+}
+function deleteCopy(partId,copyId){
+  const c=getCol();
+  if(c[partId]){c[partId]=c[partId].filter(x=>x.id!==copyId);if(!c[partId].length)delete c[partId];}
+  saveCol(c);updateStats();
+}
+
+// ══════════════════════════════
+// STATS
+// ══════════════════════════════
+function updateStats(){
+  const col=getCol();
+  let parts=Object.keys(col).length;
+  let copies=Object.values(col).reduce((s,a)=>s+a.length,0);
+  let diffs=[];
+  // compute diffs across all parts
+  const allParts=[...BLADES,...RATCHETS,...BITS,...Object.values(CUSTOM).flat()];
+  allParts.forEach(p=>{
+    const copies2=getCopies(p.id);
+    copies2.forEach(cp=>{
+      const exp=getExpW(p,cp);
+      const act=parseFloat(cp.weight);
+      if(exp&&act) diffs.push(Math.abs(act-exp));
+    });
+  });
+  document.getElementById('s-parts').textContent=parts;
+  document.getElementById('s-copies').textContent=copies;
+  document.getElementById('s-avg').textContent=diffs.length?(diffs.reduce((a,b)=>a+b)/diffs.length).toFixed(2)+'g':'–';
+}
+
+function getExpW(part,copy){
+  if(part.w===null||part.w===undefined) return null;
+  if(Array.isArray(part.w)){
+    if(!part.w.length) return null;
+    const m=copy?.mold||0;
+    return part.w[Math.min(m,part.w.length-1)];
+  }
+  return part.w;
+}
+
+// ══════════════════════════════
+// TABS / FILTER
+// ══════════════════════════════
+let curTab='blades',curFilter='all';
+
+function setTab(t){
+  curTab=t;
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  const idx=['blades','ratchets','bits','custom','news'].indexOf(t);
+  if(idx>=0) document.querySelectorAll('.tab')[idx].classList.add('active');
+  const isNews=t==='news';
+  document.getElementById('parts-controls').style.display=isNews?'none':'flex';
+  renderTab();
+}
+function setFilter(f){
+  curFilter=f;
+  ['all','owned','unowned'].forEach(x=>document.getElementById('f-'+x).classList.toggle('active',x===f));
+  renderTab();
+}
+
+// ══════════════════════════════
+// RENDER
+// ══════════════════════════════
+function renderTab(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const sort=document.getElementById('sortby').value;
+  const content=document.getElementById('content');
+  let html='';
+
+  if(curTab==='blades'){
+    const basic=filterSort(BLADES.filter(p=>p.line==='B'),q,sort);
+    const unique=filterSort(BLADES.filter(p=>p.line==='U'),q,sort);
+    html+=section('Basic Line Blades','B',basic);
+    html+=section('Unique Line Blades','U',unique);
+  } else if(curTab==='ratchets'){
+    html+=section('Ratchets','',filterSort(RATCHETS,q,sort));
+  } else if(curTab==='bits'){
+    html+=section('Bits','',filterSort(BITS,q,sort));
+  } else if(curTab==='custom'){
+    html+=comboBuilder();
+    Object.keys(CUSTOM).forEach(sec=>{
+      html+=section(sec,'C',filterSort(CUSTOM[sec],q,sort));
+    });
+  } else if(curTab==='news'){
+    content.innerHTML=renderNewsTab();return;
+  }
+  content.innerHTML=html||'<div style="padding:40px;text-align:center;color:var(--mut)">אין תוצאות</div>';
+}
+
+function filterSort(arr,q,sort){
+  let res=arr.filter(p=>{
+    if(q&&!p.n.toLowerCase().includes(q)&&!(p.aka||'').toLowerCase().includes(q)) return false;
+    const copies=getCopies(p.id);
+    if(curFilter==='owned') return copies.length>0;
+    if(curFilter==='unowned') return copies.length===0;
+    return true;
+  });
+  res.sort((a,b)=>{
+    if(sort==='weight'){const wa=getExpW(a,{})||0,wb=getExpW(b,{})||0;return wa-wb;}
+    if(sort==='copies'){return getCopies(b.id).length-getCopies(a.id).length;}
+    return a.n.localeCompare(b.n);
+  });
+  return res;
+}
+
+function section(title,line,parts){
+  if(!parts.length) return '';
+  let h=`<div class="sec-hdr"><h2>${title}</h2>`;
+  if(line) h+=`<span class="line-badge lb-${line}">${{B:'Basic',U:'Unique',C:'Custom'}[line]||line}</span>`;
+  h+=`<span class="sec-count">${parts.length} חלקים</span></div><div class="grid">`;
+  parts.forEach(p=>{h+=partCard(p);});
+  h+='</div>';
+  return h;
+}
+
+function partCard(p){
+  const copies=getCopies(p.id);
+  const hasCopies=copies.length>0;
+
+  // expected weight display
+  let expHtml='';
+  if(Array.isArray(p.w)){
+    if(p.w.length===1) expHtml=`${p.w[0]}g`;
+    else if(p.w.length>1) expHtml=p.w.map((wv,i)=>`M${i+1}:${wv}g`).join(' / ');
+    else expHtml='<span style="color:var(--mut)">לא ידוע</span>';
+  } else {
+    expHtml=p.w!=null?`${p.w}g`:'<span style="color:var(--mut)">לא ידוע</span>';
+  }
+
+  let sub='';
+  if(p.abbr) sub+=`abbr: ${p.abbr}`;
+  if(p.orig) sub+=(sub?' · ':'')+`מקור: ${{'B':'Basic','U':'Unique','C':'Custom'}[p.orig]||p.orig}`;
+  if(p.aka) sub+=(sub?' · ':'')+'aka: '+p.aka;
+  if(p.ri) sub+=(sub?' · ':'')+'Ratchet-Integrated';
+
+  let copiesHtml='';
+  if(hasCopies){
+    copiesHtml='<div class="copies-list">';
+    copies.forEach(cp=>{
+      const exp=getExpW(p,cp);
+      const act=parseFloat(cp.weight);
+      let diffChip='<span class="diff-chip dc-na">?</span>';
+      if(exp&&act){
+        const d=act-exp;
+        let cls,txt;
+        // Heavy = GOOD (we want max weight)
+        if(d>=1.5){cls='dc-gold';txt=`+${d.toFixed(2)}g 🏆`}
+        else if(d>=0.3){cls='dc-good';txt=`+${d.toFixed(2)}g ↑`}
+        else if(d>=-0.3){cls='dc-warn';txt=`${d>0?'+':''}${d.toFixed(2)}g ~`}
+        else if(d>=-1){cls='dc-bad';txt=`${d.toFixed(2)}g ↓`}
+        else{cls='dc-bad';txt=`${d.toFixed(2)}g ↓↓`}
+        diffChip=`<span class="diff-chip ${cls}">${txt}</span>`;
+      }
+      const mold=Array.isArray(p.w)&&p.w.length>1?` · M${(cp.mold||0)+1}`:'';
+      const eid=cp.id.replace(/'/g,"\\'");
+      copiesHtml+=`<div class="copy-item">
+        <div class="color-dot" style="background:${cp.colorHex||'#555'}"></div>
+        <div class="copy-info">
+          <div class="copy-color">${cp.color||'–'}${mold}</div>
+          <div class="copy-weight-row">
+            ${act?`<span class="copy-actual">${act}g</span>`:'<span class="copy-actual" style="color:var(--mut)">לא נשקל</span>'}
+            ${exp?`<span class="copy-exp">/ צפוי: ${exp}g</span>`:''}
+            ${diffChip}
+          </div>
+          ${cp.notes?`<div style="font-size:.68rem;color:var(--mut);margin-top:2px">${cp.notes}</div>`:''}
+        </div>
+        <div class="copy-actions">
+          <button class="copy-act" onclick="openModal('${p.id}','${eid}','${esc(p.n)}')" title="ערוך">✏️</button>
+          <button class="copy-act del" onclick="confirmDelete('${p.id}','${eid}')" title="מחק">🗑️</button>
+        </div>
+      </div>`;
+    });
+    copiesHtml+='</div>';
+  }
+
+  const imgEl=p.img
+    ?`<img class="pcard-img" src="${p.img}" alt="" loading="lazy" onerror="this.style.opacity=0">`
+    :`<div class="pcard-img-ph">⚙</div>`;
+  return `<div class="pcard${hasCopies?' has-copies':''}" id="pcard-${p.id}">
+    <div class="pcard-head">
+      ${imgEl}
+      <div style="flex:1;min-width:0">
+        <div class="pcard-name">${p.n}</div>
+        ${sub?`<div class="pcard-sub">${sub}</div>`:''}
+        <div class="exp-w">⚖️ ${expHtml}</div>
+      </div>
+      <button class="add-copy-btn" onclick="openModal('${p.id}',null,'${esc(p.n)}')">+ הוסף</button>
+    </div>
+    ${copiesHtml}
+  </div>`;
+}
+
+function esc(s){return s.replace(/'/g,"\\'")}
+
+// ══════════════════════════════
+// MODAL
+// ══════════════════════════════
+let modalState={partId:null,copyId:null,selectedColor:null,selectedColorHex:null,selectedMold:0};
+
+function openModal(partId,copyId,partName){
+  modalState={partId,copyId:copyId||null,selectedColor:null,selectedColorHex:null,selectedMold:0};
+
+  // find part
+  const allParts=[...BLADES,...RATCHETS,...BITS,...Object.values(CUSTOM).flat()];
+  const p=allParts.find(x=>x.id===partId);
+
+  document.getElementById('modal-title').textContent=(copyId?'עריכת':'הוספת')+' עותק – '+partName;
+
+  // wiki colors
+  const wikiColors=p?.colors||[];
+  const wikiWrap=document.getElementById('wiki-ver-wrap');
+  const wikiDiv=document.getElementById('wiki-colors');
+  wikiWrap.style.display=wikiColors.length?'block':'none';
+  if(wikiColors.length) wikiDiv.innerHTML=wikiColors.map(c=>`<button class="wvbtn" onclick="selectWikiVer('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('');
+
+  // build color presets
+  const cp=document.getElementById('color-presets');
+  cp.innerHTML=PRESET_COLORS.map(c=>`<div class="cp" style="background:${c.hex}" title="${c.n}" onclick="selectColor('${c.n}','${c.hex}')"></div>`).join('');
+
+  // mold section
+  const mw=document.getElementById('mold-wrap');
+  const mb=document.getElementById('mold-btns');
+  if(p&&Array.isArray(p.w)&&p.w.length>1){
+    mw.style.display='block';
+    mb.innerHTML=p.w.map((wv,i)=>`<button class="mold-btn${i===0?' sel':''}" onclick="selectMold(${i},this)">${i===0?'מקורי':'M'+(i+1)} · ${wv}g</button>`).join('');
+  } else {
+    mw.style.display='none';
+  }
+
+  // prefill if editing
+  document.getElementById('m-weight').value='';
+  document.getElementById('m-notes').value='';
+  document.getElementById('color-text').value='';
+  document.getElementById('color-dot-preview').style.background='#555';
+  document.getElementById('color-name-preview').textContent='לא נבחר';
+
+  if(copyId){
+    const col=getCol();
+    const cp2=(col[partId]||[]).find(x=>x.id===copyId);
+    if(cp2){
+      if(cp2.weight) document.getElementById('m-weight').value=cp2.weight;
+      if(cp2.notes) document.getElementById('m-notes').value=cp2.notes;
+      if(cp2.color){
+        document.getElementById('color-text').value=cp2.color;
+        modalState.selectedColor=cp2.color;
+        modalState.selectedColorHex=cp2.colorHex||'#888';
+        document.getElementById('color-dot-preview').style.background=cp2.colorHex||'#888';
+        document.getElementById('color-name-preview').textContent=cp2.color;
+      }
+      modalState.selectedMold=cp2.mold||0;
+      document.querySelectorAll('.mold-btn').forEach((b,i)=>b.classList.toggle('sel',i===modalState.selectedMold));
+    }
+  }
+
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal-bg').classList.remove('open')}
+
+function selectWikiVer(name){
+  modalState.selectedColor=name;
+  modalState.selectedColorHex='#888';
+  document.getElementById('color-text').value=name;
+  document.getElementById('color-name-preview').textContent=name;
+  document.getElementById('color-dot-preview').style.background='#888';
+  document.querySelectorAll('.wvbtn').forEach(b=>b.classList.toggle('sel',b.textContent===name));
+  document.querySelectorAll('.cp').forEach(b=>b.classList.remove('sel'));
+}
+
+function selectColor(name,hex){
+  modalState.selectedColor=name;modalState.selectedColorHex=hex;
+  document.getElementById('color-text').value=name;
+  document.getElementById('color-dot-preview').style.background=hex;
+  document.getElementById('color-name-preview').textContent=name;
+  document.querySelectorAll('.cp').forEach(el=>el.classList.toggle('sel',el.title===name));
+  document.querySelectorAll('.wvbtn').forEach(b=>b.classList.remove('sel'));
+}
+
+function onColorText(val){
+  // If user types custom color, try to match presets, otherwise use generic
+  const preset=PRESET_COLORS.find(c=>c.n===val);
+  if(preset){selectColor(preset.n,preset.hex);}
+  else{modalState.selectedColor=val;modalState.selectedColorHex='#888';
+    document.getElementById('color-dot-preview').style.background='#888';
+    document.getElementById('color-name-preview').textContent=val||'לא נבחר';
+    document.querySelectorAll('.cp').forEach(el=>el.classList.remove('sel'));
+  }
+}
+
+function selectMold(i,btn){
+  modalState.selectedMold=i;
+  document.querySelectorAll('.mold-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function saveModal(){
+  const data={
+    color:modalState.selectedColor||document.getElementById('color-text').value||'',
+    colorHex:modalState.selectedColorHex||'#888',
+    mold:modalState.selectedMold,
+    weight:document.getElementById('m-weight').value,
+    notes:document.getElementById('m-notes').value,
+  };
+  if(modalState.copyId){
+    updateCopy(modalState.partId,modalState.copyId,data);
+  } else {
+    addCopy(modalState.partId,data);
+  }
+  closeModal();
+  refreshCard(modalState.partId);
+}
+
+function refreshCard(partId){
+  const el=document.getElementById('pcard-'+partId);
+  if(!el) return;
+  const allParts=[...BLADES,...RATCHETS,...BITS,...Object.values(CUSTOM).flat()];
+  const p=allParts.find(x=>x.id===partId);
+  if(!p) return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=partCard(p);
+  el.replaceWith(tmp.firstElementChild);
+}
+
+function confirmDelete(partId,copyId){
+  if(!confirm('למחוק עותק זה?')) return;
+  deleteCopy(partId,copyId);
+  refreshCard(partId);
+}
+
+// ══════════════════════════════
+// NEWS TAB
+// ══════════════════════════════
+function renderNewsTab(){
+  const local=getNewsLocal();
+  const all=[...local.map(n=>({...n,_local:true})),...STATIC_NEWS];
+  all.sort((a,b)=>b.date.localeCompare(a.date));
+  const typeLabel={tournament:'🏆 טורניר',release:'🆕 יציאה חדשה',sale:'🛍️ מכירה',community:'💬 קהילה'};
+  const typeClass={tournament:'nt-tournament',release:'nt-release',sale:'nt-sale',community:'nt-community'};
+  let cards=all.map(n=>{
+    const del=n._local?`<button class="ncard-del" onclick="deleteNewsPost('${n.id}')">🗑️ מחק</button>`:'';
+    return `<div class="ncard">
+      <span class="ncard-type ${typeClass[n.type]||'nt-community'}">${typeLabel[n.type]||'📢'}</span>
+      <div class="ncard-title">${n.title}</div>
+      <div class="ncard-body">${n.body}</div>
+      <div class="ncard-meta">${del}<span>${n.date}</span><span style="color:var(--mut)">· ${n.author||'אנונימי'}</span></div>
+    </div>`;
+  }).join('');
+  return `<div class="news-wrap">
+    <div class="news-header">
+      <h2>📰 קהילת Beyblade X ישראל</h2>
+      <button class="news-post-btn" onclick="openNewsPost()">+ פרסם עדכון</button>
+    </div>
+    ${cards||'<div style="text-align:center;padding:40px;color:var(--mut)">אין עדכונים עדיין</div>'}
+  </div>`;
+}
+
+function openNewsPost(){document.getElementById('news-post-bg').style.display='flex'}
+function closeNewsPost(){document.getElementById('news-post-bg').style.display='none'}
+function submitNewsPost(){
+  const title=document.getElementById('np-title').value.trim();
+  const body=document.getElementById('np-body').value.trim();
+  if(!title){alert('יש להזין כותרת');return;}
+  const arr=getNewsLocal();
+  const users=getUsers();const u=getCurUser();
+  arr.unshift({id:'u_'+Date.now(),type:document.getElementById('np-type').value,title,body,date:new Date().toISOString().slice(0,10),author:users[u]?.dn||u});
+  saveNewsLocal(arr);
+  closeNewsPost();
+  document.getElementById('np-title').value='';document.getElementById('np-body').value='';
+  if(curTab==='news') document.getElementById('content').innerHTML=renderNewsTab();
+}
+function deleteNewsPost(id){
+  if(!confirm('למחוק עדכון זה?'))return;
+  const arr=getNewsLocal().filter(n=>n.id!==id);saveNewsLocal(arr);
+  if(curTab==='news') document.getElementById('content').innerHTML=renderNewsTab();
+}
+
+// ══════════════════════════════
+// PRODUCT MODAL
+// ══════════════════════════════
+function openProductModal(){
+  const allParts=[...BLADES,...RATCHETS,...BITS,...Object.values(CUSTOM).flat()];
+  const listEl=document.getElementById('prod-list');
+  listEl.innerHTML=PRODUCTS.map(prod=>{
+    const names=prod.parts.map(id=>{const p=allParts.find(x=>x.id===id);return p?p.n:id;});
+    return `<div class="prod-item">
+      <div>
+        <div class="prod-name">${prod.id} – ${prod.name.split('–')[1]||prod.name}</div>
+        <div class="prod-parts">${names.join(' · ')}</div>
+      </div>
+      <button class="prod-add-btn" onclick="addProductParts('${prod.id}')">הוסף לאוסף</button>
+    </div>`;
+  }).join('');
+  document.getElementById('prod-modal-bg').style.display='flex';
+}
+function closeProdModal(){document.getElementById('prod-modal-bg').style.display='none'}
+function addProductParts(prodId){
+  const prod=PRODUCTS.find(p=>p.id===prodId);if(!prod)return;
+  prod.parts.forEach(partId=>{
+    addCopy(partId,{color:prod.id+' Ver.',colorHex:'#888',mold:0,weight:'',notes:'הוסף מ'+prod.id});
+  });
+  closeProdModal();
+  renderTab();
+  alert(`נוספו ${prod.parts.length} חלקים מ-${prod.id}! ערוך כל חלק להוספת משקל.`);
+}
+
+// ══════════════════════════════
+// COMBO BUILDER
+// ══════════════════════════════
+function comboBuilder(){
+  const mkOpts=(arr)=>arr.map(p=>`<option value="${p.w!=null?p.w:0}||${esc(p.n)}">${p.n}${p.w!=null?' ('+p.w+'g)':''}</option>`).join('');
+  return `<div class="combo-box">
+    <h3>🔧 Combo Builder – חישוב משקל Custom קומבו</h3>
+    <div class="combo-grid">
+      <div><div class="cg-lbl">Lock Chip</div><select class="cg-sel" onchange="calcCombo()" id="cb-lc"><option value="">– בחר –</option>${mkOpts(CUSTOM['Lock Chips'])}</select></div>
+      <div><div class="cg-lbl">Main Blade</div><select class="cg-sel" onchange="calcCombo()" id="cb-mb"><option value="">– בחר –</option>${mkOpts(CUSTOM['Main Blades'])}</select></div>
+      <div><div class="cg-lbl">Metal Blade</div><select class="cg-sel" onchange="calcCombo()" id="cb-mtb"><option value="">–</option>${mkOpts(CUSTOM['Metal Blades'])}</select></div>
+      <div><div class="cg-lbl">Over Blade</div><select class="cg-sel" onchange="calcCombo()" id="cb-ob"><option value="">–</option>${mkOpts(CUSTOM['Over Blades'])}</select></div>
+      <div><div class="cg-lbl">Assist Blade</div><select class="cg-sel" onchange="calcCombo()" id="cb-ab"><option value="">–</option>${mkOpts(CUSTOM['Assist Blades'])}</select></div>
+      <div><div class="cg-lbl">Ratchet</div><select class="cg-sel" onchange="calcCombo()" id="cb-r"><option value="">– בחר –</option>${RATCHETS.map(p=>`<option value="${p.w||0}||${esc(p.n)}">${p.n}${p.w?' ('+p.w+'g)':''}</option>`).join('')}</select></div>
+      <div><div class="cg-lbl">Bit</div><select class="cg-sel" onchange="calcCombo()" id="cb-b"><option value="">– בחר –</option>${BITS.map(p=>`<option value="${p.w||0}||${esc(p.n)}">${p.n}${p.abbr?' ('+p.abbr+')':''}${p.w?' '+p.w+'g':''}</option>`).join('')}</select></div>
+    </div>
+    <div class="combo-result">
+      <div><div style="font-size:.7rem;color:var(--mut);margin-bottom:3px">משקל צפוי</div><div class="combo-total" id="cb-total">–</div></div>
+      <div class="combo-parts" id="cb-parts"></div>
+    </div>
+  </div>`;
+}
+
+function calcCombo(){
+  const ids=['cb-lc','cb-mb','cb-mtb','cb-ob','cb-ab','cb-r','cb-b'];
+  const lbls=['Lock Chip','Main Blade','Metal Blade','Over Blade','Assist Blade','Ratchet','Bit'];
+  let total=0,parts=[];
+  ids.forEach((id,i)=>{
+    const el=document.getElementById(id);if(!el||!el.value)return;
+    const [w,name]=el.value.split('||');const wv=parseFloat(w);
+    if(wv){total+=wv;parts.push(`${lbls[i]}: ${name} (${wv}g)`);}
+  });
+  document.getElementById('cb-total').textContent=total?total.toFixed(1)+'g':'–';
+  document.getElementById('cb-parts').innerHTML=parts.map(p=>`<div>${p}</div>`).join('');
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+function startApp(){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  const u=getCurUser();
+  const users=getUsers();
+  const dn=(users[u]?.dn||u);
+  document.getElementById('user-nm').textContent=dn;
+  document.getElementById('user-av').textContent=dn[0].toUpperCase();
+  updateStats();
+  renderTab();
+}
+
+// close modals on bg click
+document.getElementById('modal-bg').addEventListener('click',function(e){if(e.target===this)closeModal()});
+document.getElementById('prod-modal-bg').addEventListener('click',function(e){if(e.target===this)closeProdModal()});
+document.getElementById('news-post-bg').addEventListener('click',function(e){if(e.target===this)closeNewsPost()});
+
+if(getCurUser()&&getUsers()[getCurUser()]){startApp();}
+else{document.getElementById('auth-screen').style.display='flex';}
+</script>
+</body>
+</html>
